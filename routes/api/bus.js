@@ -10,9 +10,12 @@ router.post(
   "/add",
   auth,
   [
+    check("busNumber", "busNumber is required").not().isEmpty(),
+    check("name", "Name is required").not().isEmpty(),
     check("from", "From is required").not().isEmpty(),
     check("to", "to is required ").not().isEmpty(),
     check("busModel", "Bus Model is required").not().isEmpty(),
+    check("seats", "Seats is required").not().isEmpty(),
     check("departureTime", "Departure Time is required").not().isEmpty(),
     check("arrivalTime", "Arrival Time is required").not().isEmpty(),
     check("fare", "Fare is required").not().isEmpty(),
@@ -23,12 +26,25 @@ router.post(
       return res.status(400).json({ errors: errors });
     }
     try {
-      const { from, to, busModel, departureTime, arrivalTime, fare } = req.body;
+      const {
+        busNumber,
+        name,
+        from,
+        to,
+        busModel,
+        seats,
+        departureTime,
+        arrivalTime,
+        fare,
+      } = req.body;
       const newBus = new Bus({
         postedBy: req.user._id,
+        busNumber: busNumber,
+        name: name,
         from: from,
         to: to,
         busModel: busModel,
+        seats: seats,
         departureTime: departureTime,
         arrivalTime: arrivalTime,
         fare: fare,
@@ -89,19 +105,21 @@ router.get(
   ],
   async (req, res) => {
     const errors = validationResult(req);
-    if (errors.isEmpty()) {
-      return res.status(400).json({ erros: errors });
+    console.log(errors);
+    if (errors.errors.length) {
+      return res.status(400).json({ errors: errors });
     }
     try {
       const from = req.body.from;
       const to = req.body.to;
       const date = req.body.date;
+      console.log(date);
       const buses = await Bus.find({
         from,
         to,
-        date: { Sgte: new Date(date) },
+        date: { $lt: new Date(date) },
       });
-
+      console.log(buses);
       if (buses.length === 0) {
         return res.status(404).json({ msg: "Bus not found" });
       }

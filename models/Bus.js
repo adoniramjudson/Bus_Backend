@@ -5,29 +5,47 @@ const BusSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "users",
   },
+  busNumber: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
   from: {
     type: String,
-    required: "true",
+    required: true,
   },
   to: {
     type: String,
-    required: "true",
+    required: true,
   },
   busModel: {
     type: String,
-    required: "true",
+    required: true,
+  },
+  seats: {
+    type: Number,
+    required: true,
+    max: 40,
   },
   departureTime: {
     type: String,
-    required: "true",
+    required: true,
   },
   arrivalTime: {
     type: String,
-    required: "true",
+    required: true,
   },
   fare: {
     type: Number,
-    required: "true",
+    required: true,
+  },
+  date: {
+    type: Date,
+    default: Date.now(),
   },
 });
 
